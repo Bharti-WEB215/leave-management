@@ -107,7 +107,8 @@ DASHBOARD = """<!doctype html>
       });
       document.getElementById("apply-form").addEventListener("submit", async event => {
         event.preventDefault();
-        const formData = new FormData(event.currentTarget);
+        const form = event.currentTarget;
+        const formData = new FormData(form);
         try {
           await send("/api/leave-requests", {
             method: "POST",
@@ -118,7 +119,7 @@ DASHBOARD = """<!doctype html>
               reason: formData.get("reason")
             })
           });
-          event.currentTarget.reset();
+          form.reset();
           message.textContent = "Leave request submitted.";
           await refresh();
         } catch (error) {

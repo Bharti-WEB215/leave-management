@@ -24,6 +24,24 @@ def verify_login_accepts_valid_credentials_and_rejects_invalid_ones():
         wait.until(EC.url_contains("/dashboard"))
         assert "Employee Leave Management" in driver.page_source
 
+        days = driver.find_element(By.NAME, "requested_days")
+        reason = driver.find_element(By.NAME, "reason")
+        days.send_keys("3")
+        reason.send_keys("Selenium regression test")
+        driver.find_element(By.CSS_SELECTOR, "#apply-form button").click()
+        wait.until(
+            EC.text_to_be_present_in_element(
+                (By.ID, "message"), "Leave request submitted."
+            )
+        )
+        assert days.get_attribute("value") == ""
+        wait.until(
+            EC.text_to_be_present_in_element((By.ID, "balance"), "pending: 3")
+        )
+        assert "Selenium regression test (pending)" in driver.find_element(
+            By.ID, "requests"
+        ).text
+
         driver.get(f"{APP_URL}/login")
         wait.until(EC.visibility_of_element_located((By.NAME, "username")))
         driver.find_element(By.NAME, "username").send_keys(USERNAME)
