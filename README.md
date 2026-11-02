@@ -23,11 +23,15 @@ Build and run the container with:
 
 ```powershell
 docker build -t food-ordering-demo .
-docker run -d --name food-ordering-demo -p 5000:5000 food-ordering-demo
+docker run -d --name food-ordering-demo -p 5001:5000 food-ordering-demo
 docker ps
 docker inspect food-ordering-demo
 docker logs food-ordering-demo
 ```
+
+The container listens on port `5000` internally and is published as
+`http://127.0.0.1:5001` on the host. Change the host-side port if `5001` is already
+in use.
 
 `jira/backlog.csv` is a Jira CSV-import-ready backlog with three stories, priorities,
 story points, and example workflow statuses. Create a company-managed Scrum project
