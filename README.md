@@ -15,7 +15,9 @@ pytest suite on each push to `main`.
 
 Run tests with `python -m pytest -q`. The Selenium login test uses an installed
 Chrome browser and driver; start the app first, then run
-`python selenium_login_test.py`. Set `APP_URL` if the app runs elsewhere.
+`python selenium_login.py`. Set `APP_URL` if the app runs elsewhere. This standalone
+browser test is intentionally separate from pytest because it needs a running app
+and an installed Chrome browser.
 
 Build and run the container with:
 

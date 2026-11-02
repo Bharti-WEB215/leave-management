@@ -12,7 +12,7 @@ USERNAME = os.environ.get("DEMO_USERNAME", "demo")
 PASSWORD = os.environ.get("DEMO_PASSWORD", "food123")
 
 
-def test_login_accepts_valid_credentials_and_rejects_invalid_ones():
+def verify_login_accepts_valid_credentials_and_rejects_invalid_ones():
     driver = webdriver.Chrome()
     wait = WebDriverWait(driver, 10)
     try:
@@ -40,4 +40,4 @@ def test_login_accepts_valid_credentials_and_rejects_invalid_ones():
 
 
 if __name__ == "__main__":
-    test_login_accepts_valid_credentials_and_rejects_invalid_ones()
+    verify_login_accepts_valid_credentials_and_rejects_invalid_ones()
