@@ -1,44 +1,87 @@
-# Food Ordering Demo
+# Employee Leave Management
 
-A small Flask application used to demonstrate order totals, a containerized Python
-service, automated tests, and a GitHub Actions workflow.
+A Flask leave-management demo for employees to apply for leave and check their
+balances, and for managers to approve or reject leave requests.
 
-Run locally with `python -m pip install -r requirements-dev.txt` followed by
-`python app.py`. The application listens on `http://127.0.0.1:5000`. Sample login
-credentials are `demo` / `food123`; override them with `DEMO_USERNAME` and
-`DEMO_PASSWORD` environment variables. These defaults are for local demonstration
-only, not production authentication.
+## Run locally
 
-Calculate a sample order (`$50` with a `10%` discount) with `python order_total.py`.
-The GitHub Actions workflow at `.github/workflows/ci.yml` runs this command and the
-pytest suite on each push to `main`.
-
-Run tests with `python -m pytest -q`. The Selenium login test uses an installed
-Chrome browser and driver; start the app first, then run
-`python selenium_login.py`. Set `APP_URL` if the app runs elsewhere. This standalone
-browser test is intentionally separate from pytest because it needs a running app
-and an installed Chrome browser.
-
-Build and run the container with:
+Install dependencies and start the application:
 
 ```powershell
-docker build -t food-ordering-demo .
-docker run -d --name food-ordering-demo -p 5001:5000 food-ordering-demo
-docker ps
-docker inspect food-ordering-demo
-docker logs food-ordering-demo
+python -m pip install -r requirements-dev.txt
+python app.py
 ```
 
-The container listens on port `5000` internally and is published as
-`http://127.0.0.1:5001` on the host. Change the host-side port if `5001` is already
-in use.
+Open `http://127.0.0.1:5000`. The demo login is `demo` / `leave123`; configure
+`DEMO_USERNAME` and `DEMO_PASSWORD` to change it. Demo credentials and the
+development server are not intended for production.
 
-`jira/backlog.csv` is a Jira CSV-import-ready backlog with three stories, priorities,
-story points, and example workflow statuses. Create a company-managed Scrum project
-in Jira, then import this CSV through Jira's external system import flow and map
-`Story point estimate` and `Status` to the corresponding Jira fields. The statuses
-are sample states and must exist in the project's workflow.
+The leave-management API is available at `/api`:
 
-The requested feature branch is named `leavebalance-validation`; Git does not allow
-spaces in branch names. It adds validation that a leave request is positive and
-does not exceed the available balance.
+| Action | Endpoint |
+|---|---|
+| Check an employee's balance | `GET /api/leave-balance?employee_id=demo` |
+| Apply for leave | `POST /api/leave-requests` |
+| List leave requests | `GET /api/leave-requests?employee_id=demo` |
+| Approve or reject a request | `POST /api/leave-requests/<id>/decision` |
+
+Example request to apply:
+
+```json
+{
+  "employee_id": "demo",
+  "requested_days": 3,
+  "reason": "Personal leave"
+}
+```
+
+Use `{"decision": "approved"}` or `{"decision": "rejected"}` to decide a pending
+request. Pending requests reserve days against the available balance; rejected
+requests release those days. This demo keeps requests in memory, so they reset when
+the application restarts. Manager approval endpoints are demonstration-only and
+are not protected by production authorization.
+
+## Tests and CI
+
+Run the unit and API tests with `python -m pytest -q`. The standalone Selenium login
+check requires Chrome and a running application; run `python selenium_login.py`.
+Set `APP_URL` when the application is hosted at a different address.
+
+The GitHub Actions workflow runs the leave application/approval smoke check and
+pytest on each push to `main`.
+
+## Docker
+
+```powershell
+docker build -t leave-management .
+docker run -d --name leave-management -p 5001:5000 leave-management
+docker ps
+docker inspect leave-management
+docker logs leave-management
+```
+
+Open `http://127.0.0.1:5001`; the container listens on port `5000`. In the
+`-p 5001:5000` mapping, the first port is the host port. Use `5001` in the browser,
+not `5000` (which may belong to another application already running on your machine).
+If the page displays an API/JSON error, reload the correct address and confirm the
+container is running with `docker ps`.
+
+## Jira backlog
+
+`jira/backlog.csv` contains the three leave-management stories: apply for leave,
+approve or reject leave, and check leave balance. It includes priorities, story
+points, and sample workflow statuses for import into a Jira Scrum project.
+
+## GitHub Actions CI/CD
+
+The workflow at `.github/workflows/ci.yml` runs the leave-management smoke check,
+pytest suite, and Docker image build for pull requests and pushes to `main`. On a
+push to `main`, it also publishes `ghcr.io/<owner>/<repository>:latest` and a
+commit-SHA-tagged image to GitHub Container Registry using the built-in
+`GITHUB_TOKEN`. Ensure Actions is allowed to write packages in the repository
+settings. After the first successful main-branch run, the published image can be
+started with:
+
+```powershell
+docker run -d --name leave-management -p 5001:5000 ghcr.io/<owner>/<repository>:latest
+```

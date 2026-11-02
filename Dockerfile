@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY app.py order_total.py ./
+COPY app.py total_leave.py leave_balance.py ./
 
 EXPOSE 5000
 CMD ["python", "app.py"]

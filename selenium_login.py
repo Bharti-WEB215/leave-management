@@ -9,7 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 APP_URL = os.environ.get("APP_URL", "http://127.0.0.1:5000")
 USERNAME = os.environ.get("DEMO_USERNAME", "demo")
-PASSWORD = os.environ.get("DEMO_PASSWORD", "food123")
+PASSWORD = os.environ.get("DEMO_PASSWORD", "leave123")
 
 
 def verify_login_accepts_valid_credentials_and_rejects_invalid_ones():
@@ -22,7 +22,7 @@ def verify_login_accepts_valid_credentials_and_rejects_invalid_ones():
         driver.find_element(By.NAME, "password").send_keys(PASSWORD)
         driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
         wait.until(EC.url_contains("/dashboard"))
-        assert "Welcome to your food ordering account" in driver.page_source
+        assert "Employee Leave Management" in driver.page_source
 
         driver.get(f"{APP_URL}/login")
         wait.until(EC.visibility_of_element_located((By.NAME, "username")))

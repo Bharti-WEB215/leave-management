@@ -1,4 +1,4 @@
 Issue Type,Summary,Description,Priority,Story point estimate,Status
-Story,Apply for and approve leave,"As an employee, I want to submit a leave request and as a manager I want to approve or reject it so that leave is tracked accurately.",High,5,In Progress
-Story,Browse menu and add items to cart,"As a customer, I want to browse food items and add selections to my cart so that I can build an order.",Medium,3,Done
-Story,Place a food order,"As a customer, I want to review my cart and place an order so that I can receive the food I selected.",Highest,5,To Do
+Story,Apply for leave,"As an employee, I want to submit a leave request with dates and a reason so that my manager can review it.",High,3,In Progress
+Story,Approve or reject leave,"As a manager, I want to review pending leave requests and approve or reject them so that leave decisions are tracked.",High,5,To Do
+Story,Check leave balance,"As an employee, I want to see my remaining leave balance so that I can plan time off.",Medium,2,Done
